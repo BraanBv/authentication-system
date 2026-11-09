@@ -1,6 +1,7 @@
 packages:
   - 'apps/*'
 allowBuilds:
+  bcrypt: true
   esbuild: true
 injectWorkspacePackages: true
 verifyDepsBeforeRun: false
