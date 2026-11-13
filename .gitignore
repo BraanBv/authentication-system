@@ -2,3 +2,6 @@ node_modules
 dist
 
 .env
+
+rest-client.rest
+database.json
