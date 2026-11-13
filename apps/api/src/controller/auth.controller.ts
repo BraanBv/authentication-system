@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { Request, Response } from 'express';
-import { saveUser, verifyEmail } from '../service/users.service';
+import { saveUser, emailExists } from '../service/users.service';
 import { hashPassword } from '../utils/password';
 import { generateAccessToken, generateRefreshToken } from '../utils/jwt';
 import { saveRefreshToken } from '../service/jwt.service';
@@ -33,7 +33,7 @@ export const registerController = (req: Request, res: Response) => {
     details: detailsError,
   });
 
-  if(verifyEmail(body.email)) return res.status(409).json({
+  if(emailExists(body.email)) return res.status(409).json({
     error: 'email_already_exists',
     message: 'The \'email\' filed already in use.',
     details: [

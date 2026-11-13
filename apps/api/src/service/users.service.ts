@@ -1,7 +1,7 @@
 import { getDB, saveDB, User } from '../database/database';
 
 
-export const verifyEmail = (email: string): boolean => {
+export const emailExists = (email: string): boolean => {
   const users: User[] = getDB()[0].users;
 
   return users.some(user => user.email === email);
