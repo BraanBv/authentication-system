@@ -16,13 +16,13 @@ export const registerController = (req: Request, res: Response) => {
   });
 
   if(!body.email) detailsError.push({
-    filed: 'email',
+    field: 'email',
     issue: 'required',
     message: 'The \'email\' field is required.',
   });
 
   if(!body.password) detailsError.push({
-    filed: 'password',
+    field: 'password',
     issue: 'required',
     message: 'The \'password\' field is required.',
   });
