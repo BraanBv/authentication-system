@@ -141,3 +141,24 @@ export const loginController = (req: Request, res: Response) => {
     token_type: 'Bearer',
   });
 }
+
+export const refreshTokenController = (req: Request, res: Response) => {
+  const refreshToken = req.body.refreshToken;
+  if(!refreshToken) res.status(401).json({
+    error: 'missing_refresh_token',
+    message: 'The refresh token is required.',
+  });
+
+  if(!refreshTokenExists(refreshToken)) res.status(401).json({
+    error: 'invalid_refresh_token',
+    message: 'The refresh token is invalid or has expired.'
+  }); 
+
+  const decodeToken: RefreshTokenPayload = verifyRefreshToken(refreshToken);
+  const accessToken: string = generateAccessToken({ sub: decodeToken.sub, email: decodeToken.email });
+  res.status(200).json({
+    access_token: accessToken,
+    refresh_token: refreshToken,
+    token_type: 'Bearer'
+  });
+}
