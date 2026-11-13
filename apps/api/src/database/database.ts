@@ -11,15 +11,15 @@ export interface User {
 }
 
 export interface DB {
-  users: User;
+  users: User[];
   refreshTokens: string[];
 }
 
 const DB_PATH = path.join(__dirname, '..', 'database', 'database.json');
-const INITIAL_CONTENT = [{
+const INITIAL_CONTENT: DB = {
   users: [],
   refreshTokens: []
-}];
+};
 
 export const getDB = () => {
   try {
