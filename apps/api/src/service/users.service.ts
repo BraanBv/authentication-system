@@ -14,3 +14,12 @@ export const saveUser = (user: User): void => {
 
   saveDB(db);
 }
+
+export const getUserByEmail = (email: string): User | undefined => {
+  const users: User[] = getDB().users;
+
+  const user: User | undefined = users.find(user => user.email === email);
+  if(user) return user;
+
+  return undefined;
+}
