@@ -12,6 +12,7 @@ export interface AccessTokenPayload {
 
 export interface RefreshTokenPayload {
   sub: string;
+  email: string;
   jti: string;
 }
 

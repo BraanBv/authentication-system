@@ -2,8 +2,8 @@ import crypto from 'crypto';
 import { Request, Response } from 'express';
 import { saveUser, emailExists, getUserByEmail } from '../service/users.service';
 import { comparePassword, hashPassword } from '../utils/password';
-import { generateAccessToken, generateRefreshToken } from '../utils/jwt';
-import { saveRefreshToken } from '../service/jwt.service';
+import { generateAccessToken, generateRefreshToken, RefreshTokenPayload, verifyRefreshToken } from '../utils/jwt';
+import { refreshTokenExists, saveRefreshToken } from '../service/jwt.service';
 import { User } from '../database/database';
 
 export const registerController = (req: Request, res: Response) => {
@@ -60,6 +60,7 @@ export const registerController = (req: Request, res: Response) => {
 
   const refreshToken: string = generateRefreshToken({ 
     sub: id,
+    email: body.email,
     jti: crypto.randomBytes(16).toString('hex'),
   });
   saveRefreshToken(refreshToken);
@@ -119,6 +120,7 @@ export const loginController = (req: Request, res: Response) => {
 
   const refreshToken: string = generateRefreshToken({ 
     sub: user.id,
+    email: user.email,
     jti: crypto.randomBytes(16).toString('hex'),
   });
   saveRefreshToken(refreshToken);
