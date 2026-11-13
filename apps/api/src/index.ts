@@ -1,8 +1,9 @@
 import express, { Application, Request, Response } from 'express';
-import { logger } from './utils/console.js';
+import { logger } from './utils/console';
 import dotenv from 'dotenv';
 import path from 'node:path';
 import cors from 'cors';
+import authRouters from './routers/auth.routers';
 
 dotenv.config({
   path: path.join(__dirname, '..', '..', '..', '.env'),
@@ -21,6 +22,8 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
 }));
 app.use(express.json());
+
+app.use('/api', authRouters);
 
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'ok', timestamp: Date.now() });
