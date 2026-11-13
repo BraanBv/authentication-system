@@ -1,9 +1,10 @@
 import crypto from 'crypto';
 import { Request, Response } from 'express';
-import { saveUser, emailExists } from '../service/users.service';
-import { hashPassword } from '../utils/password';
+import { saveUser, emailExists, getUserByEmail } from '../service/users.service';
+import { comparePassword, hashPassword } from '../utils/password';
 import { generateAccessToken, generateRefreshToken } from '../utils/jwt';
 import { saveRefreshToken } from '../service/jwt.service';
+import { User } from '../database/database';
 
 export const registerController = (req: Request, res: Response) => {
   const body = req.body;
@@ -80,3 +81,61 @@ export const registerController = (req: Request, res: Response) => {
     token_type: 'Bearer',
   });
 };
+
+export const loginController = (req: Request, res: Response) => {
+  const body = req.body;
+
+  const detailsError = [];
+  if(!body.email) detailsError.push({
+    field: 'email',
+    issue: 'required',
+    message: 'The \'email\' field is required.',
+  });
+
+  if(!body.password) detailsError.push({
+    field: 'password',
+    issue: 'required',
+    message: 'The \'password\' field is required.',
+  });
+
+  if(detailsError.length > 0) return res.status(400).json({
+    error: 'validation_error',
+    message: 'The request body is invalid.',
+    details: detailsError,
+  });
+
+  const user: User | undefined = getUserByEmail(body.email);
+  if(user === undefined) return res.status(401).json({
+      error: 'invalid_credentials',
+      message: 'Invalid email or password'
+    });
+
+  
+  if(!comparePassword(body.password, user.passwordHash)) return res.status(401).json({
+      error: 'invalid_credentials',
+      message: 'Invalid email or password'
+    });
+
+
+  const refreshToken: string = generateRefreshToken({ 
+    sub: user.id,
+    jti: crypto.randomBytes(16).toString('hex'),
+  });
+  saveRefreshToken(refreshToken);
+
+  const accessToken: string = generateAccessToken({
+    email: body.email,
+    sub: user.id,
+  });
+
+  res.status(200).json({
+    user: {
+      id: user.id,
+      username: body.username,
+      email: body.email,
+    },
+    access_token: accessToken,
+    refresh_token: refreshToken,
+    token_type: 'Bearer',
+  });
+}
