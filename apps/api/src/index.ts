@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import path from 'node:path';
 import cors from 'cors';
 import authRouters from './routers/auth.routers';
+import usersRouters from './routers/users.routers'
 
 dotenv.config({
   path: path.join(__dirname, '..', '..', '..', '.env'),
@@ -24,6 +25,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use('/api', authRouters);
+app.use('/api', usersRouters);
 
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'ok', timestamp: Date.now() });
