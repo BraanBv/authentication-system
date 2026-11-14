@@ -9,6 +9,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     'Cache-Control': 'no-store',
     'Pragma': 'no-cache'
   });
+  next();
 });
 
 app.post('/register', registerController);
